@@ -1,6 +1,6 @@
 """
 ============================================
-Segmenting Lena into region using mean shift
+Segmenting camera into region using mean shift
 ============================================
 
 """
@@ -17,57 +17,59 @@ from mpl_toolkits.mplot3d import Axes3D
 from sklearn.cluster.mean_shift_ import MeanShift, estimate_bandwidth
 from sklearn.externals.joblib import Memory
 
+from skimage.data import camera
+
 mem = Memory(cachedir='.')
 
-def calculate_cluster(lena, lena_mat, quantile):
-    bandwidth = estimate_bandwidth(lena_mat, quantile=quantile, n_samples=500)
+def calculate_cluster(camera, camera_mat, quantile):
+    bandwidth = estimate_bandwidth(camera_mat, quantile=quantile, n_samples=500)
     ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
-    ms.fit(lena_mat)
+    ms.fit(camera_mat)
     labels = ms.labels_
     cluster_centers = ms.cluster_centers_
 
     labels_unique = np.unique(labels)
     n_clusters_ = len(labels_unique)
 
-    lena_clustered = lena.copy()
-    lena_clustered_value = lena.copy()
-    lena_mat_clustered = lena_mat.copy()
-    lena_mat_clustered_value = lena_mat.copy()
+    camera_clustered = camera.copy()
+    camera_clustered_value = camera.copy()
+    camera_mat_clustered = camera_mat.copy()
+    camera_mat_clustered_value = camera_mat.copy()
 
-    for point, pointb, value in zip(lena_mat_clustered, lena_mat_clustered_value, labels):
+    for point, pointb, value in zip(camera_mat_clustered, camera_mat_clustered_value, labels):
         point[2] = value
         pointb[2] = cluster_centers[value, 2]
-        lena_clustered[point[0], point[1]] = value
-        lena_clustered_value[point[0], point[1]] = cluster_centers[value, 2]
+        camera_clustered[point[0], point[1]] = value
+        camera_clustered_value[point[0], point[1]] = cluster_centers[value, 2]
 
-    image = {"image": lena_clustered_value,
+    image = {"image": camera_clustered_value,
              "quantile": quantile,
              "clusters": n_clusters_}
     return image
 
 
 
-lena = sp.misc.lena()
+camera = camera()
 # My computer is crap - I don't have enough ram to compute the clustering on
-# the whole lena image. Let's downsample the image by a factor of 4
-#lena = lena[::2, ::2] + lena[1::2, ::2] + lena[::2, 1::2] + lena[1::2, 1::2]
-#lena = lena[::2, ::2] + lena[1::2, ::2] + lena[::2, 1::2] + lena[1::2, 1::2]
+# the whole camera image. Let's downsample the image by a factor of 4
+#camera = camera[::2, ::2] + camera[1::2, ::2] + camera[::2, 1::2] + camera[1::2, 1::2]
+#camera = camera[::2, ::2] + camera[1::2, ::2] + camera[::2, 1::2] + camera[1::2, 1::2]
 
-# Lena as an image is useless. Let's create a 512*3 matrix (x, y, value)
-lena_mat = []
-for x, i in enumerate(lena):
+# camera as an image is useless. Let's create a 512*3 matrix (x, y, value)
+camera_mat = []
+for x, i in enumerate(camera):
     for y, j in enumerate(i):
-        lena_mat.append([x, y, j])
+        camera_mat.append([x, y, j])
 
-lena_mat = np.array(lena_mat)
+camera_mat = np.array(camera_mat)
 
 quantile_range = np.linspace(0.004, 0.02, 11)
 images = []
-images.append({"image": lena.copy(), "quantile": 0, "clusters": 0})
+images.append({"image": camera.copy(), "quantile": 0, "clusters": 0})
 
 for i, quantile in enumerate(quantile_range):
     print "%d calculating for quantile %f" % (i, quantile)
-    image = mem.cache(calculate_cluster)(lena, lena_mat, quantile)
+    image = mem.cache(calculate_cluster)(camera, camera_mat, quantile)
     images.append(image)
 
 fig = plt.figure()
@@ -83,7 +85,7 @@ for i, image in enumerate(images):
 #fig = plt.figure(1)
 #ax = fig.add_subplot(111, projection='3d')
 #
-#ax.plot(lena_mat[:, 0], lena_mat[:, 1], lena_mat[:, 2], 'w',
+#ax.plot(camera_mat[:, 0], camera_mat[:, 1], camera_mat[:, 2], 'w',
 #markerfacecolor='#111111', marker='.')
 #
 #plt.show()
