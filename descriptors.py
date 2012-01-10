@@ -18,12 +18,14 @@ def get_patch(image, size=9):
             yield image[j:j + size, i:i + size], (j, i)
 
 
-def extract_descriptors(image):
+def extract_descriptors(image, verbose=True):
     """
     Extract HOGs for patchs of size 9*9 over all the image
     """
-    gen = get_patch(image)
+    gen = get_patch(image, size=32)
     desc = []
     for patch, coord in gen:
+        if verbose and coord[1] % 5 == 0 and coord[0] == 0:
+            print 'computed up to %d, %d' % coord
         desc.append(hog(patch))
     return desc
