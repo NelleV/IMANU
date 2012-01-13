@@ -1,3 +1,5 @@
+import numpy as np
+
 from skimage.feature.hog import hog
 
 
@@ -23,9 +25,11 @@ def extract_descriptors(image, verbose=True):
     Extract HOGs for patchs of size 9*9 over all the image
     """
     gen = get_patch(image, size=32)
-    desc = []
+    descs = []
     for patch, coord in gen:
         if verbose and coord[1] % 5 == 0 and coord[0] == 0:
             print 'computed up to %d, %d' % coord
-        desc.append(hog(patch))
-    return desc
+        desc = hog(patch)
+        desc = np.concatenate((desc, np.array(coord)))
+        descs.append(desc)
+    return np.array(descs)

@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.metrics import euclidean_distance
+from sklearn.metrics import euclidean_distances
 
 
 def filter(image, hr):
@@ -26,4 +26,3 @@ def query_radius(X, h):
 
 if __name__ == "__main__":
     pass
-
