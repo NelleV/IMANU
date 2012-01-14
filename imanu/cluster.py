@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.cluster.mean_shift_ import MeanShift, estimate_bandwidth
+from sklearn.cluster import MiniBatchKMeans
 
 
 def data_reshape(image):
@@ -35,5 +36,19 @@ def meanshift(desc, quantile, hs=16, hr=16, copy=True):
     bandwidth = estimate_bandwidth(desc, quantile=quantile, n_samples=500)
 
     ms = MeanShift(bandwidth=bandwidth)
+    ms.fit(desc)
+    return ms
+
+
+def k_means(desc, quantile, hs=16, hr=16, copy=True):
+    """
+    Do nothing for now...
+    """
+    if copy:
+        desc = desc.copy()
+    desc[:, :2] = desc[:, 1:2] / hs
+    desc[:, 2:] = desc[:, 1:2] / hr
+
+    ms = MiniBatchKMeans(k=quantile) 
     ms.fit(desc)
     return ms
