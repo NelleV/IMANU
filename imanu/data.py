@@ -7,8 +7,16 @@ def baboon(small=False):
     if small:
         baboon = imread('./data/baboon_small.jpg')[::-1]
     else:
-        baboon = imread('./data/baboon.jpg')[::-1]
+        baboon = imread('./imanu/data/baboon.jpg')[::-1]
     return baboon
+
+
+def chinese():
+    return imread('./imanu/data/chinese_temple.png')
+
+
+def white_baboon():
+    return imread('./imanu/data/white_baboon.png')
 
 
 def python(gray=False):
