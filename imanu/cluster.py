@@ -31,12 +31,15 @@ def meanshift(desc, quantile, hs=16, hr=16, copy=True):
     """
     if copy:
         desc = desc.copy()
-    desc[:, :2] = desc[:, 1:2] / hs
-    desc[:, 2:] = desc[:, 1:2] / hr
+    desc[:, :2] /= hs
+    desc[:, 2:] /= hr
     bandwidth = estimate_bandwidth(desc, quantile=quantile, n_samples=500)
 
-    ms = MeanShift(bandwidth=bandwidth)
+    ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
     ms.fit(desc)
+    ms.cluster_centers_[:, :2] *= hs
+    ms.cluster_centers_[:, 2:] *= hr
+
     return ms
 
 
