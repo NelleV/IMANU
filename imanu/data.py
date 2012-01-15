@@ -19,6 +19,10 @@ def white_baboon():
     return imread('./imanu/data/white_baboon.png')
 
 
+def black_swan():
+    return imread('./imanu/data/black_swan.png')
+
+
 def python(gray=False):
     python = imread('./data/python.jpg')[::-1]
     return python
