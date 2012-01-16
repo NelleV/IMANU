@@ -44,9 +44,11 @@ une application à la segmentation de l'image, telle que décrit dans
 \cite{my_article}}
 \end{abstract}
 
-
-
 \section{Introduction}
+
+\begin{figure}
+\includegraphics[width=400px]{images/color_space.png}
+\end{figure}
 
 De nombreuses tâches de vision bas niveau nécessite l'étude d'un espace des
 caractéristiques, ou des descripteurs. De nombreuses techniques reposent sur
@@ -74,11 +76,8 @@ séparer, trop peu efficace pour le traitement d'image. \\
 On présente ici une détection de mode, maxima locaux d'une estimation non
 paramétrique de densité de probabilité du noyau.
 
-\section{Mean shift}
 
-\begin{figure}
-\includegraphics[width=400px]{images/color_space.png}
-\end{figure}
+\section{Mean shift}
 
 L'algorithme de clustering Mean Shift ne nécessite pas la connaissance a
 priori du nombre de cluster, ni la forme des clusters. Présenté pour la
@@ -151,8 +150,26 @@ s'écrit:
 
 
 \begin{figure}
-\includegraphics[width=450px]{images/mean_shift_color_space.png}
+\includegraphics[width=400px]{images/mean_shift_color_space.png}
 \end{figure}
+
+\cite{cheng} proposent deux exemples de noyaux:
+
+\begin{itemize}
+\item noyau plat:
+  \begin{equation*}
+  K(x) =  1 if ||x|| \leq 1 else 0
+  \end{equation*}
+\item noyau gaussian
+  \begin{equation*}
+  K(x) = \exp \( - || x ||^2 \)
+  \end{equation*}
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=250px]{images/noyaux.png}
+\end{figure}
+
 
 \section{Descripteurs pour la segmentation}
 
@@ -161,6 +178,13 @@ espaces de couleurs. Des descripteurs de texture peuvent aussi être utilisés,
 ainsi qu'une combinaison des descripteurs de couleurs et de texture.
 
 \subsection{Couleurs}
+
+\begin{figure}
+\includegraphics[width=450px]{images/color_black_swan.png}
+\caption{Haut gauche - Image originale: Black Swan, 512 * 512, par Agnès
+Maillard. Haut gauche - MeanShift RGB - MeanShift HSV - Meanshift XYZ. Les
+meanshift sont calculées avec les mêmes paramètres.}
+\end{figure}
 
 On dispose de plusieurs espaces de couleurs, que nous pouvons utiliser comme
 descripteurs:
@@ -178,6 +202,13 @@ est obtenu par une transformatio non linéaire de l'espace de couleur RGB
 \end{itemize}
 
 \subsection{Textures}
+
+\begin{figure}
+\includegraphics[width=500px]{images/cameraman.png}
+\caption{Cameraman, segmentée avec plusieurs descripteurs de texture
+(histogramme de niveaux de gris. Image original, MeanShift sur histogramme 
+quantifié sur 16bins, 4bins et 2bins et descripteurs spatiaux)}
+\end{figure}
 
 Il existe plusieurs manières de représenter les textures. Nous nous limiterons
 ici aux textures microscopiques: nous ignorerons donc le cas des textures
@@ -198,6 +229,12 @@ Ces quantités ne dépendent que de l'histogramme de l'image, et peuvent donc
 prendre des valeurs arbitraires sous l'effet d'un changement de constraste.
 Ces descripteurs  sont estimés sur des voisinages bornées, avec des patchs
 glissants: ils sont donc approximativement liés à une localisation.
+
+\begin{figure}
+\includegraphics[width=200px]{images/all_chinese_temple.png}
+\caption{Chinese Temple (HDR) by Trey Ratcliff, segmented using RGB (left) and
+texture (right), with varying quantiles}
+\end{figure}
 
 \bibliography{biblio}
 
