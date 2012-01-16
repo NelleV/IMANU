@@ -1,7 +1,7 @@
 \documentclass{article}
 %\usepackage[latin1]{inputenc}
 \usepackage{graphicx,amssymb,amsmath,amsbsy,MnSymbol} % extensions pour maths avancées
-\usepackage{graphicx}           % extensions pour figures
+\usepackage{graphicx,mathenv}           % extensions pour figures
 \usepackage[T1]{fontenc}        % pour les charactères accentués 
 \usepackage[utf8]{inputenc} 
 \usepackage{multicol}
@@ -106,8 +106,53 @@ le mode de cette donnée.
 \includegraphics[width=400px]{images/mean_shift_proc.png}
 \end{figure}
 
-\subsection{Estimateur de densité}
-On définit un kernel:
+On note $K(x)$ la fonction à noyaux, qui indique comment $x$ contribut à
+l'estimation de la moyenne. On peut alors calculer la moyenne $m$ de $x$:
+
+\begin{equation*}
+m(x) = \frac{\sum_{i = 1}^n K (x - x_i) x_i}{\sum_{i = 1}^n K (x - x_i)}
+\end{equation*}
+
+On appelle la différence $m(x) - x$ mean shift.
+
+La méthode la plus populaire pour estimer la densité de probabilité est la
+technique de la fenêtre de Parzen. Sachant $n$ point $x_i, i = 1, \dots, n$
+dans l'espace $R^d$, une bande passante $H$, et un noyau $K(x)$, l'estimateur
+de la densité est:
+
+\begin{equation}
+\hat{f}(x) = \frac{1}{n} \sum_{i = 1}^n K_H(x - x_i)
+\end{equation}
+
+Pour les noyaux à symmétrie circulaire, il suffit de définir le profile du
+noyau $k(x)$. On a alors:
+
+\begin{equation}
+K(x) = c_{k, d} k (|| x ||^2)
+\end{equation}
+
+$x_{k, d}$ est une constante de normalisation strictement positive, permettant
+d'assurer la contrainte suivante:
+
+\begin{equation*}
+\int_{R^d} K(x) dx = 1
+\end{equation*}
+
+Si complétement paramétrisée, la bande passante $H$ permet de raffiner
+l'estimation. Elle est cependant souvant choisie comme étant diagonale 
+$H = diag [h_1^2, \dots, h_n^2]$, ou proportionnelle à l'identité $H = h \times
+I$. Nous nous restreindrons à ce dernier cas, ce qui permet de ne définir
+qu'un seul paramètre. Avec cette contrainte supplémentaire, la densité
+s'écrit:
+
+\begin{equation}
+\hat{f}(x) = \frac{1}{nh^d} \sum_{i = 1}^n K\(\frac{x - x_i}{h}\)
+\end{equation}
+
+
+\begin{figure}
+\includegraphics[width=450px]{images/mean_shift_color_space.png}
+\end{figure}
 
 \section{Descripteurs pour la segmentation}
 
