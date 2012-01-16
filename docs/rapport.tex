@@ -41,8 +41,8 @@
 \begin{abstract} \textit{Peu connu de la littérature, l'algorithme Mean Shift
 présente un interêt particulier pour les tâches de vision impliquant une étude
 d'un espace de caractères ou descripteurs. \cite{my_article} remet au goût du
-jour cet algorithme en 2002. Nous présentons ici une étude détaillée celui-ci
-Mean Shift, ainsi qu'une application à la segmentation de l'image, telle que
+jour cet algorithme en 2002. Nous présentons ici une étude détaillée de celui-ci
+, ainsi qu'une application à la segmentation de l'image, telle que
 décrit dans \cite{my_article}} \end{abstract}
 
 \section{Introduction}
@@ -51,31 +51,33 @@ décrit dans \cite{my_article}} \end{abstract}
 \includegraphics[width=400px]{images/color_space.png}
 \end{figure}
 
-De nombreuses tâches de vision bas niveau nécessite l'étude d'un espace des
-caractéristiques, ou des descripteurs. De nombreuses techniques reposent sur
-une bonne évaluation des paramètres: ceux-ci sont souvent devinés. \\
-Un espace de paramètres est obtenu en étudiant localement une image: l'image
+Beaucoup de tâches de vision bas niveau nécessitent l'étude d'un espace des
+caractéristiques, ou des descripteurs. De nombreuses techniques exigent de
+l'utilisateur une bonne évaluation de leurs paramètres ; il doit souvent les
+deviner. \\
+Un espace de paramètres est obtenu en étudiant localement une image : l'image
 d'entrée peut par exemple être découpée en patchs, qui sont eux même
-prétraiter. Des descripteurs sont extraits, et associé à un point dans
-l'espace: le milieu du patch. Une fois que toute l'image est traité, on peut
-obtenir les descripteurs les plus significatifs, les descripteurs
+prétraîtés. Des descripteurs sont extraits, et associés à un point dans
+l'espace: le milieu du patch. Une fois que toute l'image est traîtée, on peut
+obtenir les descripteurs les plus significatifs, ceux
 contenant le plus d'information,  en calculant les régions les plus denses de
-l'espace de descripteurs: ces régions correspondent à des clusters. \\
-La nature des descripteurs dépendent de l'application cherchée: cela peut être
+l'espace de descripteurs : ces régions correspondent à des clusters. \\
+La nature des descripteurs dépend de l'application cherchée: cela peut être
 des descripteurs locaux à un pixel, telle que une représentation des couleurs,
 ou des descripteurs calculés à partir d'un petit patch de l'image,
 représentant une texture. \\
-L'analyse de cette espace varie elle aussi selon la tâche à effectuer. Malgré
+L'analyse de cet espace varie elle aussi selon la tâche à effectuer. Malgré
 le nombre important d'algorithmes de clustering, peu d'entre eux sont adaptés à
 l'étude d'un espace de descripteurs: beaucoup reposent sur une connaissance
 préalable du nombre de clusters ou de la forme de ceux-ci, ou alors sont mal
 adpatés à l'étude d'un espace de descripteurs trop complexe, ce qui est
 souvent le cas dans le domaine du traitement d'image. Parmi les algorithmes de
 clustering les plus standards, on peut citer le k-means, qui nécessite une
-connaissance du nombre de cluster, et les algorithmes hiérarchiques, qui
-consiste à agréger des clusters entre eux, ou a les séparer, trop peu
+connaissance préalable du nombre de clusters, et les algorithmes hiérarchiques, qui
+consistent à agréger des clusters entre eux, ou à les séparer; cette deuxième
+méthode est trop peu
 efficace pour le traitement d'image. \\
-On présente ici une détection de mode, maxima locaux d'une estimation non
+Cette étude présente ici une détection de mode, maxima locaux d'une estimation non
 paramétrique de densité de probabilité du noyau grâce à l'algorithme meanshift.
 
 
@@ -89,18 +91,18 @@ paramétrique de densité de probabilité du noyau grâce à l'algorithme meansh
 
 
 L'algorithme de clustering Mean Shift ne nécessite pas la connaissance au
-préalable du nombre de cluster, ni la forme des clusters. Présenté pour la
+préalable du nombre de clusters, ni la forme des clusters. Présenté pour la
 première fois par \cite{fukugana} en 1975, le mean shift est un estimateur non
 paramétrique du gradient de la densité de probabilité. Disparu de la
 littérature, il est remis au goût du jour par \cite{cheng} en 1995. Une
 application au filtrage et à la segmentation est ensuite proposée en 1997,
 1999 dans \cite{comaniciu_meer}. Il est ensuite utilisé dans des domaines tels
-que le suivi d'objet, le maillage, et la segmentation d'image. Cette grande
-variété d'application s'explique par l'exploitation de l'espace des
+que le suivi d'objets, le maillage, et la segmentation d'images. Cette grande
+variété d'applications s'explique par l'exploitation de l'espace des
 descripteurs. \\
-L'algorithme repose sur la recherche de maximum d'une densité de probabilité,
+L'algorithme repose sur la recherche de maxima de densité de probabilité,
 \textit{un mode}. Une région est caractérisée par une densité de probabilité,
-elle même représentée par un mode. Plusieurs régions impliquent donc plusieurs
+elle-même représentée par un mode. Plusieurs régions impliquent donc plusieurs
 modes. Trouver à quelle région appartient une donnée correspond donc à trouver
 le mode de cette donnée.
 
@@ -126,22 +128,26 @@ $\mathbf{x}$:
 
 On appelle la différence $\mathbf{m}(\mathbf{x}) - \mathbf{x}$ mean shift.
 
-Un noyau est vérifie les propriétés suivantes:
+Un noyau vérifie les propriétés suivantes:
 
 \begin{align*}
-\int_{R^d} K(x)dx = 1 & \lim_{\|x\| \rightarrow \infty} \|x\|^d K(x) \\
-\int_{R^d} x K(x) dx = 0 & \int_{R^d} xx^T K(x) dx = c_k I
+\int_{R^d} K(\mathbf{x})dx = 1 & \lim_{\|\mathbf{x}\| \rightarrow \infty}
+\|\mathbf{x}\|^d K(\mathbf{x}) \\
+\int_{R^d} \mathbf{x} K(\mathbf{x}) dx = 0 & \int_{R^d} \mathbf{xx}^T
+K(\mathbf{x}) dx = c_k I
 \end{align*}
 
 La méthode la plus populaire pour estimer la densité de probabilité est la
 technique de la fenêtre de Parzen, ou estimation par Noyau. Cette méthode
 généralise la méthode d'estimation par histogramme. Celle-ci estime la densité
-en un point $x$ par la proportion $x_1, \dots, x_n$ aux alentours de $x$. Une
+en un point $\mathbf{x}$ par la proportion $\mathbf{x}_1, \dots, \mathbf{x}_n$
+aux alentours de $\mathbf{x}$. Une
 technique classique pour effectuer une telle tâche consiste à tracer une boîte
-dont la largeur dépends d'un paramètre de lissage $h$, et à compter le nombre
-d'observation appartenant à cette boîte.
-La méthode du noyau remplace la boîte centrée en $x$ de largeur $h$ par une
-courbe centrée en $x$. La moyenne des courbes en cloche forme l'observateur.
+dont la largeur dépend d'un paramètre de lissage $h$, et à compter le nombre
+d'observations appartenant à cette boîte.
+La méthode du noyau remplace la boîte centrée en $\mathbf{x}$ de largeur $h$ par une
+courbe centrée en $\mathbf{x}$. La moyenne des courbes en cloche forme
+l'estimateur.
 
 \begin{figure}[h]
 \begin{center}
@@ -152,26 +158,26 @@ L'estimateur est la moyenne des courbes rouges, ie, la courbe bleue divisée
 par $6$}
 \end{figure}
 
-Formalisons cette notion. Sachant $n$ point $x_i, i = 1, \dots, n$
-dans l'espace $R^d$, une bande passante $H$ de taille $d \times d$, un noyau
-$K(x)$, l'estimateur de la densité est:
+Formalisons cette notion. $n$ points $\mathbf{x}_i, i = 1, \dots, n$
+dans l'espace $R^d$, une bande passante $\mathbf{H}$ de taille $d \times d$ et un noyau
+$K(\mathbf{x})$ étant donné, l'estimateur de la densité est:
 
 \begin{equation}
-\hat{f}(x) = \frac{1}{n} \sum_{i = 1}^n K_H(x - x_i)
+\hat{f}(\mathbf{x}) = \frac{1}{n} \sum_{i = 1}^n K_\mathbf{H}(\mathbf{x} - \mathbf{x}_i)
 \end{equation}
 
-Pour les noyaux à symétrie circulaire, il suffit de définir le profile du
+Pour les noyaux à symétrie circulaire, il suffit de définir le profil du
 noyau $k(x)$. On a alors:
 
 \begin{equation}
-K(x) = c_{k, d} k (|| x ||^2)
+K(\mathbf{x}) = c_{k, d} k (|| \mathbf{x} ||^2)
 \end{equation}
 
 $x_{k, d}$ est une constante de normalisation strictement positive, permettant
 d'assurer la contrainte suivante:
 
 \begin{equation*}
-\int_{R^d} K(x) dx = 1
+\int_{R^d} K(\mathbf{x}) dx = 1
 \end{equation*}
 
 \begin{figure}[h]
@@ -183,13 +189,14 @@ d'assurer la contrainte suivante:
 
 Si complétement paramétrisée, la bande passante $H$ permet de raffiner
 l'estimation. Elle est cependant souvent choisie comme étant diagonale
-$H = diag [h_1^2, \dots, h_n^2]$, ou proportionnelle à l'identité $H = h \times
-I$. Nous nous restreindrons à ce dernier cas, ce qui permet de ne définir
+$\mathbf{H} = diag [h_1^2, \dots, h_n^2]$, ou proportionnelle à l'identité
+$\mathbf{H} = h \times \mathbf{I}$. Nous nous restreindrons à ce dernier cas,
+ce qui permet de ne définir
 qu'un seul paramètre. Avec cette contrainte supplémentaire, la densité
 s'écrit:
 
 \begin{equation}
-\hat{f}(x) = \frac{1}{nh^d} \sum_{i = 1}^n K\(\frac{x - x_i}{h}\)
+\hat{f}(\mathbf{x}) = \frac{1}{nh^d} \sum_{i = 1}^n K\(\frac{\mathbf{x} - \mathbf{x}_i}{h}\)
 \end{equation}
 
 
@@ -198,11 +205,11 @@ s'écrit:
 \begin{itemize}
 \item noyau plat:
   \begin{equation*}
-  K(x) =  1 if ||x|| \leq 1 else 0
+  K(\mathbf{x}) =  1 if ||\mathbf{x}|| \leq 1 else 0
   \end{equation*}
-\item noyau gaussian
+\item noyau gaussien
   \begin{equation*}
-  K(x) = \exp \( - || x ||^2 \)
+  K(\mathbf{x}) = \mathbf{x}p \( - || \mathbf{x} ||^2 \)
   \end{equation*}
 \end{itemize}
 
@@ -216,28 +223,28 @@ Nous avons maintenant tous les outils pour calculer le gradient de
 l'estimateur de densité:
 
 \begin{align*}
-\hat{\nabla} f_{h, K}(x) & = & \nabla \hat{f}_{h, K}(x) \\
+\hat{\nabla} f_{h, K}(\mathbf{x}) & = & \nabla \hat{f}_{h, K}(\mathbf{x}) \\
 			 & = & \frac{2 c_{k, d}}{n h^{d + 2}} \sum_{i = 1}^n
-			 (x - x_i)  g\( \| \frac{x - x_i}{h}
+			 (\mathbf{x} - \mathbf{x}_i)  g\( \| \frac{\mathbf{x} - \mathbf{x}_i}{h}
 			 \|^2\) \\
 			 & = & \frac{2 c_{k, d}}{n h^{d + 2}} \[ \sum_{i = 1}^n
-			 (x - x_i) \] \[ \frac{\sum_{i = 1}^n x_i g\(\|
-			 \frac{x - x_i}{y} \|^2\)}{ \sum_{i = 1}^n g \( \|
-			 \frac{x - x_i}{h} \|^2\) } - x\]
+			 (\mathbf{x} - \mathbf{x}_i) \] \[ \frac{\sum_{i = 1}^n \mathbf{x}_i g\(\|
+			 \frac{\mathbf{x} - \mathbf{x}_i}{y} \|^2\)}{ \sum_{i = 1}^n g \( \|
+			 \frac{\mathbf{x} - \mathbf{x}_i}{h} \|^2\) } - \mathbf{x}\]
 \end{align*}
 
 avec $g = - k'$. On remarque que le premier terme est proportionnel à
-l'estimateur de densité au point $x$ (calculé avec le noyau $G = c_g
-g(\|x\|^2)$. Le deuxième terme est le vector mean shift $m$, qui pointe vers
-la direction de l'augmentation maximal de densité, et est proportionnal au
-gradient de l'estimateur de densité au point $x$, avec le noyau $K$. On peut
-donc réécrire l'algorithme mean shift au point $x_i$ tel qu'il suit:
+l'estimateur de densité au point $\mathbf{x}$ (calculé avec le noyau $G = c_g
+g(\|\mathbf{x}\|^2)$. Le deuxième terme est le vector mean shift $\mathbf{m}$, qui pointe vers
+la direction de l'augmentation maximale de densité, et est proportionnel au
+gradient de l'estimateur de densité au point $\mathbf{x}$, avec le noyau $K$. On peut
+donc réécrire l'algorithme mean shift au point $\mathbf{x}_i$ tel qu'il suit:
 
 \begin{itemize}
-\item Calculer le vecteur meanshft $m(x_i^t)$
-\item Déplacer la fenêtre d'estimation de densité $x_i^{t + 1} = x_i^t +
-m(x_i^t)$.
-\item Itérer jusqu'à converge, ie jusqu'à $\nabla f(x_i) = 0$
+\item Calculer le vecteur meanshift $\mathbf{m}(\mathbf{x}_i^t)$
+\item Déplacer la fenêtre d'estimation de densité $\mathbf{x}_i^{t + 1} = \mathbf{x}_i^t +
+\mathbf{m}(\mathbf{x}_i^t)$.
+\item Itérer jusqu'à convergence, ie jusqu'à $\nabla f(\mathbf{x}_i) = 0$
 \end{itemize}
 
 Nous utiliserons l'implémentation du MeanShift en python de scikit-learn,
@@ -247,7 +254,7 @@ Nous utiliserons l'implémentation du MeanShift en python de scikit-learn,
 
 Parmi les descripteurs intuitifs d'une image, on peut citer les différents
 espaces de couleurs. Des descripteurs de texture peuvent aussi être utilisés,
-ainsi qu'une combinaison des descripteurs de couleurs et de texture.
+ainsi qu'une combinaison des descripteurs de couleur et de texture.
 
 \subsection{Couleurs}
 
@@ -255,21 +262,21 @@ ainsi qu'une combinaison des descripteurs de couleurs et de texture.
 \includegraphics[width=450px]{images/color_black_swan.png}
 \caption{Haut gauche - Image originale: Black Swan, 512 * 512, par Agnès
 Maillard. Haut gauche - MeanShift RGB - MeanShift HSV - Meanshift XYZ. Les
-meanshift sont calculées avec les mêmes paramètres.}
+meanshifts sont calculés avec les mêmes paramètres.}
 \end{figure}
 
 On dispose de plusieurs espaces de couleurs, que nous pouvons utiliser comme
 descripteurs:
 
 \begin{itemize}
-\item niveau de gris: le descripteurs le plus simple est certainement le
-niveau de gris. Étant d'une dimension, le calcul du meanshift est
-particulièrement rapide sur celui-ci. Il est d'un interêt limité.
-\item RGB: cet espace corresponds aux couleurs primaires, qui correspondent
-aux trois longueurs d'onde auxquelles répondent l'oeil humain.
+\item niveau de gris: le descripteur le plus simple est certainement le
+niveau de gris. Comme il est d'une dimension, le calcul du meanshift est
+particulièrement rapide sur celui-ci. Il est d'un intérêt limité.
+\item RGB: cet espace correspond aux couleurs primaires, qui sont associées
+aux trois longueurs d'onde auxquelles réponds l'oeil humain.
 \item HSV (hue saturation value): cet espace de teinte, saturation et valeur,
-est obtenu par une transformatio non linéaire de l'espace de couleur RGB
-\item XYZ: cet espace se rapproche vers une description des couleurs conforme
+est obtenu par une transformation non linéaire de l'espace de couleur RGB
+\item XYZ: cet espace se rapproche d'une description des couleurs conforme
 à la vision humain, celui introduisant la notion subjective de la luminance.
 \end{itemize}
 
@@ -282,14 +289,14 @@ d'espace de couleur.
 \label{bins}
 \includegraphics[width=500px]{images/cameraman.png}
 \caption{Cameraman, segmentée avec plusieurs descripteurs de texture
-(histogramme de niveaux de gris. Image original, MeanShift sur histogramme 
+(histogramme de niveaux de gris. Image originale, MeanShift sur histogramme
 quantifié sur 16bins, 4bins et 2bins et descripteurs spatiaux)}
 \end{figure}
 
 Il existe plusieurs manières de représenter les textures. Nous nous limiterons
 ici aux textures microscopiques: nous ignorerons donc le cas des textures
 macroscopiques, dont nous pouvons distinguer les éléments géométriques
-(pommes, galets etc...). Il est cependant bon de rappeler qu'une texture
+(pommes, galets, \dots). Il est cependant bon de rappeler qu'une texture
 macroscopique peut devenir microscopique avec un changement d'échelle.
 
 Une texture microscopique est très bien représentée par les statistiques de
@@ -302,15 +309,15 @@ premier ordre:
 \end{itemize}
 
 Ces quantités ne dépendent que de l'histogramme de l'image, et peuvent donc
-prendre des valeurs arbitraires sous l'effet d'un changement de constraste.
-Ces descripteurs  sont estimés sur des voisinages bornées, avec des patchs
+prendre des valeurs arbitraires sous l'effet d'un changement de contraste.
+Ces descripteurs  sont estimés sur des voisinages bornés, avec des patchs
 glissants: ils sont donc approximativement liés à une localisation.
 
 Nous utiliserons des histogrammes de niveaux de gris, calculés sur des petits
 patchs d'image de taille $5 \times 5$. Ces histogrammes peuvent être
 quantifiés sur un nombre variable de bins afin d'avoir des descripteurs
 variés. \ref{bins} montre le résultat d'une segmentation en utilisant des
-descripteurs différents, de tailles variants entre $5$ et $19$ éléments.
+descripteurs différents, de tailles variant entre $5$ et $19$ éléments.
 
 \begin{figure}[h]
 \begin{center}
@@ -325,12 +332,12 @@ texture (right), with varying quantiles}
 \includegraphics[width=400px]{images/all_lena.png}
 \caption{Lena - Haut gauche: image originale - haut milieu: image segmentée à
 l'aide du meanshift, dans l'espace des descripteurs RGB + spatial - haut
-droit: image segmentée avec le meanshit dans l'espace des descripteurs de
-textures (6bins), des couleurs (RGB) et spatiale - bas droite: image segmentée
+droit: image segmentée avec le meanshift dans l'espace des descripteurs de
+texture (6bins), couleur (RGB) et spatial - bas droite: image segmentée
 avec le k-means, $k = 2$, dans l'espace des couleurs et spatiale - bas milieu:
 image segmentée avec le k-means, $k = 5$, dans l'espace des couleurs RGB et
-spatial - bas droite: image segmentée avec le k-means, $k = 5$, dans l'espaces
-des descripteurs de textures (6bins), des couleurs (RGB) et spatiale.}
+spatial - bas droite: image segmentée avec le k-means, $k = 5$, dans l'espace
+des descripteurs de texture (6bins), couleur (RGB) et spatial.}
 \end{figure}
 
 \newpage
@@ -340,11 +347,11 @@ des descripteurs de textures (6bins), des couleurs (RGB) et spatiale.}
 \includegraphics[width=110px]{images/white_baboon.png}
 \end{wrapfigure}
 
-Malgré la volonté de \cite{my_article} de limiter le nombre de paramètre à
+Malgré la volonté de \cite{my_article} de limiter le nombre de paramètres à
 trouver, le meanshift nécessite de trouver la bande passante ou le quantile le
 plus performant. Ne pas le choisir correctement peut mener à des résultats
 catastrophiques. Dans certains cas, il est donc plus simple d'utiliser le
-k-means, dont le paramètre $k$ correspond au nombre de cluster, et est donc
+k-means, dont le paramètre $k$ correspond au nombre de clusters, et est donc
 plus intuitif à trouver (Figure \ref{lena}). \\
 Cependant, il existe des moyens d'estimer la bande passante, comme décrit dans
 \cite{fastnonparametric}, afin d'avoir un algorithme non paramétrique.
